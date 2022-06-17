@@ -1,0 +1,34 @@
+{% extends 'sales_force_app/sales_force.html' %}
+{% block content %}
+
+<br>
+
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<h5>Contacts</h5>
+		</div>
+		<div class="card card-body">
+			<table class="table">
+				<tr>
+          			<th>Contact ID</th>
+					<th>Name</th>
+					<th>Account</th>
+					<th>Email</th>
+				</tr>
+				{% for contact in contacts %}
+					<tr>
+            			<td><a href="/salesforce/contact/{{contact.contacts_id}}">{{contact.contacts_id}}</td>
+						<td>{{contact.name}}</td>
+						<td>{{contact.account}}</td>
+						<td>{{contact.email}}</td>
+						<td><a class="btn btn-sm btn-danger" href="{% url 'delete_contact' contact.contacts_id %}">Delete</a></td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	
+</div>
+
+{% endblock content %}

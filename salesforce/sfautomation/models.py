@@ -2,7 +2,6 @@ from random import choices
 from secrets import choice
 from django.conf import settings
 from django.db import models
-# from sfautomation.override_file_field import ContentTypeRestrictedFileField
 
 RISK_LEVELS = (
     ('HIGH', 'HIGH'), 
