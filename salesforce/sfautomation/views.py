@@ -96,6 +96,7 @@ def search_opportunities(response):
     query = response.GET.get('q')
     context = {"opportunity": Opportunity.objects.filter(Q(name__icontains=query) | Q(email__icontains=query))}
     return render(response, 'search_opportunity.html', context)
+
 # all instances
 def contacts(response):
     contacts = Contacts.objects.all()
