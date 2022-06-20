@@ -1,6 +1,5 @@
 from django import forms
 from .models import RISK_LEVELS, Contacts, Opportunity
-from django.contrib.admin import widgets
 
 class CreateContact(forms.Form):
     name = forms.CharField(label= "Name", max_length=200)

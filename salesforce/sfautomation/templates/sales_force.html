@@ -1,0 +1,13 @@
+{% extends 'main_template.html' %}
+{% block content %}
+
+<h1>Search Opportunities and Contacts</h1>
+
+<form action="salesforce/search_opportunity" method="get">
+  <input name="q" type="text" placeholder="Search opportunities...">
+</form>
+
+<form action="salesforce/search_contact" method="get">
+  <input name="q" type="text" placeholder="Search contacts...">
+</form>
+{% endblock content %}

@@ -1,5 +1,4 @@
 from random import choices
-from secrets import choice
 from django.conf import settings
 from django.db import models
 

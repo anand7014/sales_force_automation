@@ -22,7 +22,7 @@ def dashboard(request):
 
 	context = {'contacts':contacts, 'opportunity':opportunity,
 	'total_contacts':total_contacts }
-	return render(request, 'sales_force_app/sales_force.html', context)
+	return render(request, 'sales_force.html', context)
 
 def create_contact(response):
     if response.method == 'POST':
@@ -43,7 +43,7 @@ def create_contact(response):
             
     else:
         form = CreateContact()
-    return render(response, 'sales_force_app/create_contact.html', {"form": form})
+    return render(response, 'create_contact.html', {"form": form})
 
 def create_opportunity(response):
     if response.method == 'POST':
@@ -65,24 +65,24 @@ def create_opportunity(response):
                 new_opportunity.contacts.add(contact_selected)
     else:
         form = CreateOpportunity()
-    return render(response, 'sales_force_app/create_opportunity.html', {"form": form})
+    return render(response, 'create_opportunity.html', {"form": form})
 
 def get_contact(response, contact_id):
     contact = Contacts.objects.get(pk = int(contact_id))
     form = CreateContact(contact.__dict__)
-    return render(response, 'sales_force_app/edit_contact.html', {"form": form, "id": contact_id})
+    return render(response, 'edit_contact.html', {"form": form, "id": contact_id})
 
 def get_opportunity(response, opportunity_id):
     opportunity = Opportunity.objects.get(pk = int(opportunity_id))
     form = CreateOpportunity(opportunity.__dict__)
-    return render(response, 'sales_force_app/create_opportunity.html', {"form": form})
+    return render(response, 'create_opportunity.html', {"form": form})
 
 class SalesforceView(TemplateView):
-    template_name = 'sales_force_app/sales_force.html'
+    template_name = 'sales_force.html'
 
 class SearchResultsViewOpportunities(ListView):
     model = Opportunity
-    template_name = 'sales_force_app/search_opportunities.html'
+    template_name = 'search_opportunities.html'
     def get_queryset(self):
         query = self.request.GET.get('q')
         return Opportunity.objects.filter(Q(name__icontains=query) | Q(account__icontains=query))
@@ -90,22 +90,22 @@ class SearchResultsViewOpportunities(ListView):
 def search_contacts(response):
     query = response.GET.get('q')
     context = {"contacts": Contacts.objects.filter(Q(name__icontains=query) | Q(email__icontains=query))}
-    return render(response, 'sales_force_app/search_contacts.html', context)
+    return render(response, 'search_contacts.html', context)
 
 def search_opportunities(response):
     query = response.GET.get('q')
     context = {"opportunity": Opportunity.objects.filter(Q(name__icontains=query) | Q(email__icontains=query))}
-    return render(response, 'sales_force_app/search_opportunity.html', context)
+    return render(response, 'search_opportunity.html', context)
 # all instances
 def contacts(response):
     contacts = Contacts.objects.all()
     context = {'contacts': contacts}
-    return render(response, 'sales_force_app/contacts.html', context)
+    return render(response, 'contacts.html', context)
 
 def opportunities(response):
     opportunities = Opportunity.objects.all()
     context = {'opportunities': opportunities}
-    return render(response, 'sales_force_app/opportunities.html', context)
+    return render(response, 'opportunities.html', context)
 
 
 # update views
