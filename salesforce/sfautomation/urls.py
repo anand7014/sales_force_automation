@@ -8,8 +8,8 @@ from . import views
 urlpatterns = [
     path('salesforce', views.dashboard, name='salesforce'),
     # create apis
-    path('salesforce/create_contact', views.create_contact),
-    path('salesforce/create_opportunity', views.create_opportunity),
+    path('salesforce/create_contact', views.create_contact, name='create_contact'),
+    path('salesforce/create_opportunity', views.create_opportunity, name='create_opportunity'),
     # search apis
     path('salesforce/search_opportunity', views.search_opportunities),
     path('salesforce/search_contact', views.search_contacts),

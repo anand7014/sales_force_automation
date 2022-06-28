@@ -1,11 +1,12 @@
-{% block title %}Edit Opportunity{% endblock %}
+{% extends 'main_template.html' %}
+{% block title %}Edit Contact{% endblock %}
  
 {% block content %}
-
-<form method="put" action="salesforce" enctype="multipart/form-data">
+<h1>Edit Contact</h1>
+<form method="POST" action="{% url 'update_contact' id %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.as_p}}
-    <a class="btn btn-sm btn-warning" href="{% url 'update_contact' } %}">Update</a>
+    <button type="submit" name="save">Update</button>
 </form>
-
+    
 {% endblock %}

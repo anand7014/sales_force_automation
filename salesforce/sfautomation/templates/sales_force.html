@@ -1,13 +1,32 @@
 {% extends 'main_template.html' %}
+{% load static %}
+
 {% block content %}
 
-<h1>Search Opportunities and Contacts</h1>
 
-<form action="salesforce/search_opportunity" method="get">
-  <input name="q" type="text" placeholder="Search opportunities...">
-</form>
+<div class='wrapper'>
+  <link rel="stylesheet" href="{% static './css/main.css' %}">
+  <h1>Search Opportunities and Contacts</h1>
+ 
+  <div class="forms-container">
+    <div class="search-form">
+      <form action="salesforce/search_opportunity" method="get">
+        <input name="q" type="text" placeholder="Search opportunities...">
+      </form>
 
-<form action="salesforce/search_contact" method="get">
-  <input name="q" type="text" placeholder="Search contacts...">
-</form>
+      <form action="{% url 'create_opportunity' %}" method='GET'>
+        <button type='submit'> Create Opportunity</button>
+      </form>
+    </div>
+   
+    <div class="search-form">
+      <form action="salesforce/search_contact" method="get">
+        <input name="q" type="text" placeholder="Search contacts...">
+      </form>
+
+      <form action="{% url 'create_contact' %}" method='GET'>
+        <button type='submit'> Create Contact</button>
+      </form>
+    </div>
+  </div>
 {% endblock content %}

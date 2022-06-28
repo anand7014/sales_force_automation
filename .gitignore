@@ -1,2 +1,6 @@
 venv
 __pycache__
+filtered_fsck
+gitfsck
+gitshow.py
+salesforce/db.sqlite3

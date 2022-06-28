@@ -11,11 +11,11 @@ class Contacts(models.Model):
     contacts_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     account = models.CharField(max_length=200)
-    address = models.CharField(max_length=200)
+    address = models.TextField(max_length=200)
     title = models.CharField(max_length=200)
     work_phone = models.CharField(max_length=10)
     mobile_phone = models.CharField(max_length=10)
-    email = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200)
     attachments = models.FileField(upload_to='media/attachments', default='', null=True, blank=True)
     class Meta:
         ordering = ['contacts_id']

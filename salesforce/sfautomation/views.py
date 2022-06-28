@@ -1,34 +1,33 @@
 import pdb
 from unicodedata import name
 from urllib import response
+from django import forms
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from .forms import CreateContact, CreateOpportunity
+from .forms import CreateContact, CreateOpportunity, ContactForm, OpportunityForm
 from .models import Contacts, Opportunity
-from django.views.generic import TemplateView, ListView
 from django.db.models import Q
 from django.forms.models import model_to_dict
-
-
 # Create your views here.
 
-
+# Home page
 def dashboard(request):
 	contacts = Contacts.objects.all()
 	opportunity = Opportunity.objects.all()
-
 	total_contacts = contacts.count()
-
-
 	context = {'contacts':contacts, 'opportunity':opportunity,
-	'total_contacts':total_contacts }
+	           'total_contacts':total_contacts }
 	return render(request, 'sales_force.html', context)
 
+###### Create views ######
 def create_contact(response):
     if response.method == 'POST':
         form = CreateContact(response.POST, response.FILES)
         if form.is_valid():
-            
+            # file_attached = form.cleaned_data['attachments']
+            # # pdb.set_trace()
+            # if file_attached.size > MAX_FILE_SIZE:
+            #     raise forms.ValidationError("keep upload size below 1mb")
             new_contact = Contacts(
                 name = form.cleaned_data['name'],
                 account = form.cleaned_data['account'],
@@ -67,26 +66,19 @@ def create_opportunity(response):
         form = CreateOpportunity()
     return render(response, 'create_opportunity.html', {"form": form})
 
+
+###### Display views ######
 def get_contact(response, contact_id):
     contact = Contacts.objects.get(pk = int(contact_id))
-    form = CreateContact(contact.__dict__)
-    return render(response, 'edit_contact.html', {"form": form, "id": contact_id})
+    form = ContactForm(instance = contact)
+    return render(response, 'edit_contact.html', {"form": form, "id": contact_id, "file_url": contact.attachments.url})
 
 def get_opportunity(response, opportunity_id):
     opportunity = Opportunity.objects.get(pk = int(opportunity_id))
-    form = CreateOpportunity(opportunity.__dict__)
-    return render(response, 'create_opportunity.html', {"form": form})
+    form = OpportunityForm(instance = opportunity)
+    return render(response, 'edit_opportunity.html', {"form": form, "id": opportunity_id})
 
-class SalesforceView(TemplateView):
-    template_name = 'sales_force.html'
-
-class SearchResultsViewOpportunities(ListView):
-    model = Opportunity
-    template_name = 'search_opportunities.html'
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        return Opportunity.objects.filter(Q(name__icontains=query) | Q(account__icontains=query))
-
+###### Search views ######
 def search_contacts(response):
     query = response.GET.get('q')
     context = {"contacts": Contacts.objects.filter(Q(name__icontains=query) | Q(email__icontains=query))}
@@ -97,7 +89,7 @@ def search_opportunities(response):
     context = {"opportunity": Opportunity.objects.filter(Q(name__icontains=query) | Q(email__icontains=query))}
     return render(response, 'search_opportunity.html', context)
 
-# all instances
+###### List views ######
 def contacts(response):
     contacts = Contacts.objects.all()
     context = {'contacts': contacts}
@@ -109,10 +101,10 @@ def opportunities(response):
     return render(response, 'opportunities.html', context)
 
 
-# update views
-def update_contact(response, contact_id):
+###### Update views ###### 
+def update_contact(response, contact_id): 
     contact_to_update = Contacts.objects.get(pk=int(contact_id))
-    form = CreateContact(response.POST)
+    form = CreateContact(response.POST, response.FILES)
     if form.is_valid():
         contact_to_update.name = form.cleaned_data['name']
         contact_to_update.account = form.cleaned_data['account']
@@ -123,7 +115,7 @@ def update_contact(response, contact_id):
         contact_to_update.email = form.cleaned_data['email']
         contact_to_update.attachments = form.cleaned_data['attachments']
         contact_to_update.save()
-    return redirect(f"salesforce/contact/{contact_id}")
+    return redirect(f"salesforce")
 
 def update_opportunity(response, opportunity_id):
     opportunity_to_update = Opportunity.objects.get(pk=int(opportunity_id))
@@ -131,20 +123,21 @@ def update_opportunity(response, opportunity_id):
     if form.is_valid():
         primary_contact_id = form.cleaned_data['primary_contact']
         primary_contact = Contacts.objects.get(pk = int(primary_contact_id))
-        opportunity_to_update.name = form.cleaned_data['name'],
-        opportunity_to_update.win_percentage = form.cleaned_data['win_percentage'],
-        opportunity_to_update.account = form.cleaned_data['account'],
-        opportunity_to_update.primary_contact = primary_contact,
-        opportunity_to_update.close_date = form.cleaned_data['close_date'],
-        opportunity_to_update.estimated_revenue = form.cleaned_data['estimated_revenue'],
-        opportunity_to_update.risk_level = form.cleaned_data['risk_level'],
-        opportunity_to_update.contacts = ""
+        opportunity_to_update.name = form.cleaned_data['name']
+        opportunity_to_update.win_percentage = form.cleaned_data['win_percentage']
+        opportunity_to_update.account = form.cleaned_data['account']
+        opportunity_to_update.primary_contact = primary_contact
+        opportunity_to_update.close_date = form.cleaned_data['close_date']
+        opportunity_to_update.estimated_revenue = form.cleaned_data['estimated_revenue']
+        opportunity_to_update.risk_level = form.cleaned_data['risk_level']
+        opportunity_to_update.contacts.clear()
         opportunity_to_update.save()
+        pdb.set_trace()
         for contact_selected in form.cleaned_data['contacts']:
             opportunity_to_update.contacts.add(contact_selected)
-    return redirect(f"sales_force/opportunity/{opportunity_id}")
+    return redirect(f"salesforce")
 
-# deletion views
+###### Deletion views ###### 
 def delete_contact(response, contact_id):
     Contacts.objects.get(pk = int(contact_id)).delete()
     return redirect('salesforce')
