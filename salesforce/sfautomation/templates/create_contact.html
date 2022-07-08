@@ -1,6 +1,6 @@
 {% extends 'main_template.html' %}
 {% block content %}
-<h1>New Contact</h1>
+<h1>Create New Contact</h1>
 <form method="POST" action="{% url 'create_contact' %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.as_p}}
